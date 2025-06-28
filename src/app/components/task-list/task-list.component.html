@@ -1,0 +1,24 @@
+<div class="task-header">
+  <button mat-raised-button color="primary" (click)="sort('priority')">
+    Sort By Priority
+  </button>
+  <button mat-raised-button color="primary" (click)="sort('date')">
+    Sort By Date
+  </button>
+  <button mat-raised-button color="primary" (click)="addTask()">
+    Add Task
+  </button>
+</div>
+
+<div class="task-card-container">
+  <app-task-card *ngFor="let task of tasks" 
+    [task]="task" 
+    [clickable]="true" 
+    (click)="editTask(task.id)"
+    >
+    <div task-actions>
+      <button mat-stroked-button color="primary" *ngIf="task.status === Status.Done" (click)="archiveTask(task.id); $event.stopPropagation()">Archive</button>
+      <button mat-stroked-button color="warn" (click)="deleteTask(task.id); $event.stopPropagation()">Delete</button>
+    </div>
+  </app-task-card>
+</div>

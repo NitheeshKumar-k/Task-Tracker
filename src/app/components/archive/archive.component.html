@@ -1,0 +1,7 @@
+<div class="task-card-container">
+  <app-task-card *ngFor="let task of tasks" [task]="task" [clickable]="false">
+    <div task-actions>
+      <button mat-stroked-button color="primary" (click)="restoreTask(task.id); $event.stopPropagation()">Restore</button>
+    </div>
+  </app-task-card>
+</div>

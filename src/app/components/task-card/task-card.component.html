@@ -1,0 +1,18 @@
+<mat-card class="task-card" [class.clickable]="clickable" appOverdueHighlight [dueDate]="task.dueDate">
+  <mat-card-title>{{ task.title }}</mat-card-title>
+  <mat-card-subtitle>{{ task.category }}</mat-card-subtitle>
+  <mat-card-content>
+    <p><strong>Description:</strong> {{task.description | truncate}} </p>
+    <p><strong>Due Date:</strong> {{ task.dueDate | dueDateFormat }}</p>
+    <p><strong>Status:</strong> {{ task.status }}</p>
+    <p><strong>Priority:</strong> {{ task.priority }}</p>
+    <p class="task-tags">
+      <strong>Tags:</strong>
+      <ng-container *ngIf="task?.tags?.length; else noTags"><span class="task-card-tag" *ngFor="let tag of task.tags">{{ tag }}</span></ng-container>
+      <ng-template #noTags>N/A</ng-template>
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+    <ng-content select="[task-actions]"></ng-content>
+  </mat-card-actions>
+</mat-card>

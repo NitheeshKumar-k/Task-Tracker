@@ -1,0 +1,33 @@
+:host {
+  display: block;
+  background-color: #d3e8f9;
+  min-height: calc(100vh - 64px);
+  padding: 2rem;
+}
+
+.task-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.task-header button {
+  margin-left: 16px;
+}
+
+.task-card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-rows: 1fr;
+  gap: 1.5rem;
+}
+
+.task-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+app-task-card {
+  cursor: pointer;
+}

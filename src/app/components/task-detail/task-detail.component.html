@@ -1,0 +1,159 @@
+<div class="tab-container">
+  <mat-tab-group class="full-height-tabs" color="accent" backgroundColor="primary">
+    <ng-container *ngIf="isNew">
+      <mat-tab label="New Task">
+        <ng-container *ngTemplateOutlet="form"></ng-container>
+      </mat-tab>
+    </ng-container>
+    <ng-container *ngIf="!isNew">
+      <mat-tab label="Task Details">
+        <ng-container *ngTemplateOutlet="taskDetails"></ng-container>
+      </mat-tab>
+      <mat-tab label="Edit Form">
+        <ng-container *ngTemplateOutlet="form"></ng-container>
+      </mat-tab>
+    </ng-container>
+  </mat-tab-group>
+</div>
+
+<ng-template #taskDetails>
+  <mat-card class="task-card">
+    <mat-card-title>{{ taskForm.get('title')?.value }}</mat-card-title>
+    <mat-card-content>
+      <p>
+        <strong>Description:</strong> {{ taskForm.get('description')?.value || 'N/A'}}
+      </p>
+
+      <p><strong>Status:</strong> {{ taskForm.get('status')?.value }}</p>
+
+      <p *ngIf="taskForm.get('dueDate')?.value">
+        <strong>Due Date:</strong> {{ taskForm.get('dueDate')?.value | dueDateFormat }}
+      </p>
+
+      <p><strong>Category:</strong> {{ taskForm.get('category')?.value }}</p>
+
+      <p><strong>Priority:</strong> {{ taskForm.get('priority')?.value }}</p>
+
+      <p>
+        <strong>Tags:</strong>
+        <mat-chip-list *ngIf="tags.controls.length; else noTags">
+          <mat-chip *ngFor="let tagCtrl of tags.controls">{{ tagCtrl.value }}</mat-chip>
+        </mat-chip-list>
+        <ng-template #noTags> N/A</ng-template>
+      </p>
+    </mat-card-content>
+  </mat-card>
+</ng-template>
+
+
+<ng-template #form>
+  <form class="task-card" [formGroup]="taskForm" (ngSubmit)="save()" [appDisableCompleted]="taskForm">
+    <!-- Title -->
+    <mat-form-field appearance="fill" >
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title">
+      <mat-error *ngIf="isInvalid('title') && taskForm.get('title')?.hasError('required')">
+        Title is required.
+      </mat-error>
+      <mat-error *ngIf="isInvalid('title') && taskForm.get('title')?.hasError('minlength')">
+        Title must be at least 3 characters.
+      </mat-error>
+      <mat-error *ngIf="isInvalid('title') && taskForm.get('title')?.hasError('maxlength')">
+        Title cannot exceed 50 characters.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Description -->
+    <mat-form-field appearance="fill" >
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+      <mat-error *ngIf="isInvalid('description') && taskForm.get('description')?.hasError('maxlength')">
+        Description cannot exceed 200 characters.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Status -->
+    <mat-form-field appearance="fill">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option *ngFor="let status of statuses" [value]="status">{{ status }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="isInvalid('status')">Status is required.</mat-error>
+    </mat-form-field>
+
+    <!-- Due Date -->
+    <mat-form-field appearance="fill">
+      <mat-label>Due Date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="dueDate">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="taskForm.get('dueDate')?.hasError('invalidDate') && (taskForm.get('dueDate')?.touched || submitted)">
+        Please select a valid date.
+      </mat-error>
+      <mat-error *ngIf="taskForm.get('dueDate')?.hasError('pastDate') && (taskForm.get('dueDate')?.touched || submitted)">
+        Due date cannot be in the past.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Category -->
+    <mat-form-field appearance="fill">
+      <mat-label>Category</mat-label>
+      <mat-select formControlName="category">
+        <mat-option *ngFor="let cat of allowedCategories" [value]="cat">{{ cat }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="isInvalid('category')">Category is required.</mat-error>
+    </mat-form-field>
+
+    <!-- Priority -->
+    <mat-form-field appearance="fill">
+      <mat-label>Priority</mat-label>
+      <mat-select formControlName="priority">
+        <mat-option *ngFor="let priority of allowedPriorities" [value]="priority">{{ priority }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Tags -->
+    <mat-form-field class="tag-input-field" appearance="fill">
+      <mat-label>Tags</mat-label>
+      <mat-chip-list #chipList formArrayName="tags" aria-label="Tags selection">
+        <mat-chip *ngFor="let tagCtrl of tags.controls; let i = index"
+                  [selectable]="true"
+                  [removable]="true"
+                  (removed)="removeTag(i)">
+          {{ tagCtrl.value }}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+
+        <input
+          placeholder="New tag..."
+          #tagInput
+          [matChipInputFor]="chipList"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="addTagFromInput($event)"
+        />
+      </mat-chip-list>
+      <div class="mat-error" *ngIf="tags.errors?.['maxTags'] && (tags.touched || submitted)">
+        Cannot add more than 5 tags.
+      </div>
+      <div class="mat-error" *ngIf="tags.errors?.['shortTag'] && (tags.touched || submitted)">
+        Each tag must be at least 2 characters.
+      </div>
+      <div class="mat-error" *ngIf="tags.errors?.['longTag'] && (tags.touched || submitted)">
+        Each tag cannot exceed 20 characters.
+      </div>
+      <mat-hint class="error" *ngIf="tagsLoadError">Unable to load tags, please enter custom tags.</mat-hint>
+      <div class="tag-hint mat-hint" *ngIf="!tagsLoadError && predefinedTags.length">
+        Suggested: <span class="predfined-tag" *ngFor="let tag of predefinedTags" (click)="addTag(tag)">{{tag}}</span>
+      </div>
+    </mat-form-field>
+
+    <!-- Submit -->
+    <button mat-raised-button color="primary" type="submit" [disabled]="taskForm.invalid">
+      Save
+    </button>
+  </form> 
+</ng-template>
+
+

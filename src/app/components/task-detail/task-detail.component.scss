@@ -1,0 +1,134 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  box-sizing: border-box;
+  background-color: #d3e8f9;
+  min-height: calc(100vh - 64px);
+}
+
+form {
+  margin: 16px auto;
+  min-width: 35%;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+button[type="submit"] {
+  align-self: center;
+  padding: 0.5rem 2rem;
+}
+
+.tag-input-field {
+  width: 100%;
+  margin-bottom: 0 !important;
+}
+
+.tag-hint {
+   font-size: 0.65rem;
+}
+
+:host ::ng-deep mat-chip {
+  height: 20px;
+  font-size: 0.65rem;
+  padding: 0 6px;
+  line-height: 20px;
+  min-width: 24px;
+}
+
+.predfined-tag {
+  display: inline-block;
+  background-color: #e0f7fa;
+  color: #00796b;
+  padding: 0.2rem 0.6rem;
+  margin-right: 0.4rem;
+  border-radius: 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.predfined-tag:hover {
+  background-color: #b2ebf2;
+}
+
+.error {
+  color: rgb(249, 70, 70);
+}
+
+.task-card {
+  margin: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f5f5f5;
+}
+
+.full-height-tabs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.full-height-tabs .mat-tab-body-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.full-height-tabs .mat-tab-body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 16px;
+}
+
+::ng-deep .mat-tab-group.mat-primary .mat-tab-labels {
+  display: flex;
+}
+
+::ng-deep .mat-tab-label {
+  flex: 1 1 0;
+  justify-content: center;
+  text-align: center;
+}
+
+.tab-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-height: 400px;
+  min-width: 35%;
+  max-width: 570px;
+}
+
+mat-tab-group {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-tab-body-wrapper {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.mat-tab-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
